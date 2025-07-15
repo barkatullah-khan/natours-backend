@@ -3,16 +3,23 @@ const tourController=require('./../controllers.js/tourController')
 
 
 const router = express.Router();
-router.param('id',tourController.checkID)
-//Create a checkBody middleware
-//chack if body contains the name and price property 
-//if not,send back 400(bad request)
-//Add it to the post handler stack
+
+router
+  .route('/top-5-cheap')
+  .get(tourController.alliasTopTours, tourController.getAllTours);
+
+router
+.route('/tour-stats').
+get(tourController.getTourStates)
+
+router
+.route('/monthly-plan/:year')
+.get(tourController.getMonthlyPlan)
 
 router
 .route('/')
 .get(tourController.getAllTours)
-.post(tourController.checkBody,tourController.createTour);
+.post(tourController.createTour);
 
 router
 .route('/:id')
