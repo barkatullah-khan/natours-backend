@@ -1,36 +1,50 @@
-// Get the map container element and parse the JSON data
-const mapElement = document.getElementById('map');
-if (mapElement) {
-    const locations = JSON.parse(mapElement.dataset.locations);
+/* eslint-disable */
+export const displayMap = locations => {
+    mapboxgl.accessToken =
+        'pk.eyJ1Ijoiam9uYXNzY2htZWR0bWFubiIsImEiOiJjam54ZmM5N3gwNjAzM3dtZDNxYTVlMnd2In0.ytpI7V7w7cyT1Kq5rT9Z1A';
 
-    // Initialize the map and set its initial view
-    const map = L.map('map', {
-        zoomControl: false, // You can choose to enable this later
-        scrollWheelZoom: false // Prevents zooming with the mouse wheel
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/jonasschmedtmann/cjvi9q8jd04mi1cpgmg7ev3dy',
+        scrollZoom: false
+        // center: [-118.113491, 34.111745],
+        // zoom: 10,
+        // interactive: false
     });
 
-    // Add the tile layer (OpenStreetMap is a good free choice)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    const bounds = new mapboxgl.LngLatBounds();
 
-    // Create an array to hold all marker coordinates
-    const points = [];
     locations.forEach(loc => {
-        // Leaflet requires coordinates in [latitude, longitude] format
-        const coords = [loc.coordinates[1], loc.coordinates[0]];
-        points.push(coords);
+        // Create marker
+        const el = document.createElement('div');
+        el.className = 'marker';
 
-        // Add a marker for each location
-        L.marker(coords)
-            .addTo(map)
-            .bindPopup(`Day ${loc.day}: ${loc.description}`, { autoClose: false })
-            .openPopup();
+        // Add marker
+        new mapboxgl.Marker({
+            element: el,
+            anchor: 'bottom'
+        })
+            .setLngLat(loc.coordinates)
+            .addTo(map);
+
+        // Add popup
+        new mapboxgl.Popup({
+            offset: 30
+        })
+            .setLngLat(loc.coordinates)
+            .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+            .addTo(map);
+
+        // Extend map bounds to include current location
+        bounds.extend(loc.coordinates);
     });
 
-    // Create a bounds object to fit the map view to all markers
-    const bounds = L.latLngBounds(points);
     map.fitBounds(bounds, {
-        padding: [80, 80] // Add some padding around the markers
+        padding: {
+            top: 200,
+            bottom: 150,
+            left: 100,
+            right: 100
+        }
     });
-}
+};

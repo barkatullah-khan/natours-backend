@@ -73,6 +73,7 @@ exports.logout = (req, res) => {
   res.status(200).json({ status: 'success' });
 };
 
+
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
@@ -142,6 +143,8 @@ exports.isLoggedIn = async (req, res, next) => {
       // THERE IS A LOGGED IN USER
       res.locals.user = currentUser;
       return next();
+
+
     } catch (err) {
       return next();
     }
