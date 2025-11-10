@@ -33,9 +33,12 @@ export const updateSettings = async (data, type) => {
 // 1) Update user data (name + email)
 document.querySelector('.form-user-data')?.addEventListener('submit', e => {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    updateSettings({ name, email }, 'data');
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+
+    updateSettings(form, 'data');
 });
 
 // 2) Update password

@@ -41,10 +41,12 @@ exports.getLoginForm = (req, res) => {
 };
 
 exports.getAccount = (req, res) => {
-    res.status(200).render('account', {
-        title: 'Your account'
-    });
+  res.status(200).render('account', {
+    title: 'Your account',
+    user: req.user  // <-- This line ensures your user data (including photo) is passed to the view
+  });
 };
+
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
